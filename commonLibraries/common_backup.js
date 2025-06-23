@@ -1,3 +1,4 @@
+// Ciao
 class Utility {
 	constructor() { }
 
