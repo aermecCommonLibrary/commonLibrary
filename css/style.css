@@ -1,0 +1,15 @@
+.button {
+	background-color: darksalmon;
+	height: 30px;
+	width: auto;
+	border-radius: 10px;
+	font: 10px cursive;
+}
+
+label {
+	font: 15px cursive;
+}
+
+form {
+	margin-left: 50%;
+}

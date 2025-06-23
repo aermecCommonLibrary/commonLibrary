@@ -1,0 +1,65 @@
+<html>
+
+<head>
+	<title>CommonJs</title>
+	<script src="commonLibraries/common.js"></script>
+	<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+	<div id="container">
+		<input class="button" type="button" onclick="render()" value="Recupera Tipo Dispositivo">
+		<div id="container"></div>
+		<form id="form1">
+			<br>
+			<label>Nome</label>
+			<br>
+			<input type="text" id="text1" />
+			<br>
+			<label>Cognome</label>
+			<br>
+			<input type="text" id="text2" />
+			<br><label>Sesso</label><br>
+			<label>Maschio</label> <input type="radio" value="M" name="sesso" id="sessoM">
+			<label>Femmina</label> <input type="radio" value="F" name="sesso" id="sessoF">
+			<br>
+			<label>Mostra Tutto</label> <input type="checkbox" id="checkbox1" onclick="onChangeShowAll()" />
+			<div id="mostraTuttoDivId"></div>
+			<br>
+			<input class="button" type="button" onclick="saveAll()" value="Save">
+			<input class="button" type="button" onclick="onResetHtml()" value="ResetHtml">
+		</form>
+		<script>
+			Utility.initForSaveHtml();
+			function render() {
+				let tipoDispositivo = utility.getScreenInfo();
+				let container = document.getElementById("container");
+				const inchesDiagonal = tipoDispositivo.get("inchesDiagonal");
+				const screenOrientation = tipoDispositivo.get("screenOrientation");
+				let html = "<h2>Il tipo di dispositivo attualmente in uso ha dimensione schermo: " + inchesDiagonal;
+				html += " con orientamento schermo: " + screenOrientation + "</h2>";
+				container.innerHTML = html;
+			}
+			function saveAll() {
+				Utility.saveHtml();
+				Utility.saveFormValues();
+				document.getElementById("form1").reset();
+			}
+			function onResetHtml() {
+				Utility.resetHtml();
+			}
+			function onChangeShowAll() {
+				let divRef = this.document.getElementById("mostraTuttoDivId");
+				const isChecked = form1.elements["checkbox1"].checked;
+				if (isChecked) {
+					divRef.innerHTML = "<h1> All content is showed </h1>";
+				} else {
+					divRef.innerHTML = "";
+				}
+			}
+			Utility.resetHtml();
+		</script>
+	</div>
+</body>
+
+</html>
