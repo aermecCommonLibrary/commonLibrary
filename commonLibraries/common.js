@@ -1,6 +1,10 @@
 class Utility {
 	constructor() { }
-
+	static FormType = {
+		CHECKBOX: 'checkbox',
+		TEXT: 'text',
+		RADIO: 'radio'
+	};
 	static getScreenInfo() {
 		const output = new Map();
 		output.set("inchesDiagonal", extractInchesDiagonal());
@@ -46,10 +50,10 @@ class Utility {
 				const id = control.id;
 				let value;
 				const type = control.type;
-				if (type === 'text') {
+				if (type === this.FormType.TEXT) {
 					value = control.value;
 				}
-				if (type === 'checkbox' || type === 'radio') {
+				if (type === this.FormType.CHECKBOX || type === this.FormType.RADIO) {
 					value = control.checked;
 				}
 				if (!!id) {
@@ -76,10 +80,10 @@ class Utility {
 	static resetValueFormControl(curr) {
 		const element = document.getElementById(curr.id);
 		const type = element.type;
-		if (type === 'text') {
+		if (type === this.FormType.TEXT) {
 			element.value = curr.value;
 		}
-		if (type === 'radio' || type === 'checkbox') {
+		if (type === this.FormType.RADIO || type === this.FormType.CHECKBOX) {
 			if (this.#isTrue(curr.value)) {
 				element.checked = true;
 			}
