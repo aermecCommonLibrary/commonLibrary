@@ -6,6 +6,7 @@ class Utility {
 		TEXT: 'text',
 		RADIO: 'radio'
 	};
+	static Delimiter = '§';
 
 	static getScreenInfo() {
 		const output = new Map();
@@ -58,10 +59,15 @@ class Utility {
 				if (type === this.InputType.CHECKBOX || type === this.InputType.RADIO) {
 					value = control.checked;
 				}
-				if (!!id) {
-					valuesForm += `id:${id};value:${value};`;
+				if (!!id && !!value) {
+					valuesForm += `${id}${this.Delimiter}${value}${this.Delimiter}`;
 				}
 			});
+		this.#saveValuesForm(valuesForm);
+	}
+	static #saveValuesForm(valuesForm) {
+		const lenghtToRemove = this.Delimiter.length;
+		valuesForm = valuesForm.slice(0, valuesForm.length - lenghtToRemove);
 		sessionStorage.setItem('valuesForm', valuesForm);
 	}
 	static resetHtml() {
@@ -69,11 +75,11 @@ class Utility {
 		if (htmlToReset) {
 			document.getElementById('container').innerHTML = htmlToReset;
 			const values = sessionStorage.getItem('valuesForm');
-			const parts = values.split(';').filter(Boolean);
+			const parts = values.split(this.Delimiter).filter(Boolean);
 			const results = [];
 			for (let i = 0; i < parts.length; i += 2) {
-				const id = parts[i].split(':')[1];
-				const value = parts[i + 1].split(':')[1];
+				const id = parts[i];
+				const value = parts[i + 1];
 				results.push({ id, value });
 			}
 			results.forEach(res => this.resetValueFormControl(res));
