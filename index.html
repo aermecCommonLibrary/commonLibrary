@@ -30,7 +30,7 @@
 			<input class="button" type="button" onclick="onResetHtml()" value="ResetHtml">
 		</form>
 		<script>
-			Utility.initForSaveHtml();
+			Utility.initForSaveHtml('container');
 			function render() {
 				let tipoDispositivo = utility.getScreenInfo();
 				let container = document.getElementById("container");
@@ -41,12 +41,12 @@
 				container.innerHTML = html;
 			}
 			function saveAll() {
-				Utility.saveHtml();
-				Utility.saveFormValues();
+				Utility.saveHtml('container');
+				Utility.saveFormValues('container');
 				document.getElementById("form1").reset();
 			}
 			function onResetHtml() {
-				Utility.resetHtml();
+				Utility.resetHtml('container');
 			}
 			function onChangeShowAll() {
 				let divRef = this.document.getElementById("mostraTuttoDivId");
@@ -57,7 +57,7 @@
 					divRef.innerHTML = "";
 				}
 			}
-			Utility.resetHtml();
+			Utility.resetHtml('container');
 		</script>
 	</div>
 </body>

@@ -6,7 +6,9 @@ class Utility {
 		TEXT: 'text',
 		RADIO: 'radio'
 	};
-	static Delimiter = '§';
+	static DELIMITER = '§';
+	static STOREDHTML = 'htmlStored';
+	static VALUEFORM = 'formValueStored';
 
 	static getScreenInfo() {
 		const output = new Map();
@@ -32,22 +34,30 @@ class Utility {
 
 		return ppi;
 	}
-	static initForSaveHtml() {
+	static #extractDomElement(id) {
+		let element = document.getElementById(id);
+		if (!element) {
+			element = document.getElementsByTagName('body')[0];
+		}
+		return element;
+	}
+	static initForSaveHtml(elementId) {
 		window.addEventListener("beforeunload", ev => {
-			let zoneData = document.getElementById("container");
-			if (zoneData.children.length > 0) {
-				this.saveHtml();
-				this.saveFormValues();
+			const element = this.#extractDomElement(elementId);
+			if (element.children.length > 0) {
+				this.saveHtml(elementId);
+				this.saveFormValues(elementId);
 			}
 		});
 	}
-	static saveHtml() {
-		const container = document.getElementById("container").innerHTML;
-		sessionStorage.setItem('container', container);
+	static saveHtml(elementId) {
+		let element = this.#extractDomElement(elementId);
+		sessionStorage.setItem(this.STOREDHTML, element.innerHTML);
 	}
-	static saveFormValues() {
+	static saveFormValues(elementId) {
+		let element = this.#extractDomElement(elementId);
 		let valuesForm = '';
-		document
+		element
 			.querySelectorAll('input')
 			.forEach(control => {
 				const id = control.id;
@@ -60,22 +70,23 @@ class Utility {
 					value = control.checked;
 				}
 				if (!!id && !!value) {
-					valuesForm += `${id}${this.Delimiter}${value}${this.Delimiter}`;
+					valuesForm += `${id}${this.DELIMITER}${value}${this.DELIMITER}`;
 				}
 			});
 		this.#saveValuesForm(valuesForm);
 	}
 	static #saveValuesForm(valuesForm) {
-		const lenghtToRemove = this.Delimiter.length;
+		const lenghtToRemove = this.DELIMITER.length;
 		valuesForm = valuesForm.slice(0, valuesForm.length - lenghtToRemove);
-		sessionStorage.setItem('valuesForm', valuesForm);
+		sessionStorage.setItem(this.VALUEFORM, valuesForm);
 	}
-	static resetHtml() {
-		const htmlToReset = sessionStorage.getItem('container');
-		if (htmlToReset) {
-			document.getElementById('container').innerHTML = htmlToReset;
-			const values = sessionStorage.getItem('valuesForm');
-			const parts = values.split(this.Delimiter).filter(Boolean);
+	static resetHtml(elementId) {
+		const html = sessionStorage.getItem(this.STOREDHTML);
+		if (!!html) {
+			let element = this.#extractDomElement(elementId);
+			element.innerHTML = html;
+			const formValue = sessionStorage.getItem(this.VALUEFORM);
+			const parts = formValue.split(this.DELIMITER).filter(Boolean);
 			const results = [];
 			for (let i = 0; i < parts.length; i += 2) {
 				const id = parts[i];
@@ -92,9 +103,7 @@ class Utility {
 			element.value = curr.value;
 		}
 		if (type === this.InputType.RADIO || type === this.InputType.CHECKBOX) {
-			if (this.#isTrue(curr.value)) {
-				element.checked = true;
-			}
+			element.checked = this.#isTrue(curr.value);
 		}
 	}
 	static #isTrue(value) {
